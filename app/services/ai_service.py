@@ -1,17 +1,22 @@
-from openai import OpenAI
-from dotenv import load_dotenv
-import os
+from groq import Groq
+from app.config import GROQ_API_KEY
+from typing import Generator
 
-load_dotenv()
+client = Groq(api_key=GROQ_API_KEY)
 
-client = OpenAI(
-    api_key=os.getenv("OPENAI_API_KEY")
-)
 
-def generate_readme(file_list: str) -> str:
+def stream_readme(repo_url: str, style: str) -> Generator[str, None, None]:
+    """
+    Streams README generation token-by-token from Groq
+    """
+
     prompt = f"""
 You are an expert software engineer.
-Generate a professional README.md for the following GitHub repository.
+
+Generate a {style} GitHub README.md for the following repository:
+
+Repository URL:
+{repo_url}
 
 Include:
 - Project overview
@@ -21,17 +26,27 @@ Include:
 - Usage
 - Folder structure
 - Future improvements
-
-Repository files:
-{file_list}
 """
 
-    response = client.chat.completions.create(
-        model="gpt-4o-mini",
+    completion = client.chat.completions.create(
+        model="llama-3.1-8b-instant",
         messages=[
-            {"role": "system", "content": "You generate professional README files."},
-            {"role": "user", "content": prompt}
-        ]
+            {
+                "role": "system",
+                "content": "You generate professional README files."
+            },
+            {
+                "role": "user",
+                "content": prompt
+            }
+        ],
+        temperature=0.3,
+        max_tokens=1200,
+        stream=True
     )
 
-    return response.choices[0].message.content
+    for chunk in completion:
+        if chunk.choices and chunk.choices[0].delta:
+            content = chunk.choices[0].delta.content
+            if content:
+                yield content
