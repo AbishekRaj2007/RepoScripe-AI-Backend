@@ -1,97 +1,114 @@
-# RepoScripe-AI-Backend
-==========================
+# 🚀 RepoScribe AI – Backend
 
-A scalable and efficient AI-powered backend for the RepoScripe project.
+RepoScribe AI Backend is a **FastAPI-based backend service** that generates professional `README.md` files for GitHub repositories using **AI-powered streaming responses**.
 
-## Project Overview
----------------
+It uses **Groq LLMs (LLaMA 3.1)** to generate README content **token-by-token**, enabling real-time updates on the frontend.
 
-RepoScripe-AI-Backend is a Node.js-based backend API designed to provide a robust and scalable infrastructure for the RepoScripe project. This API utilizes machine learning algorithms to analyze and process data, enabling the development of intelligent features and insights.
+---
 
-## Features
----------
+## ✨ Features
 
-*   **Data Analysis**: Utilize machine learning algorithms to analyze and process data from various sources.
-*   **Predictive Modeling**: Develop predictive models to forecast trends and patterns in data.
-*   **Real-time Insights**: Provide real-time insights and recommendations based on analyzed data.
-*   **Scalability**: Designed to handle large volumes of data and scale horizontally to meet growing demands.
-*   **Security**: Implement robust security measures to protect sensitive data and prevent unauthorized access.
+- 🔥 AI-powered README generation
+- ⚡ Real-time **streaming output**
+- 🧠 Powered by **Groq (LLaMA 3.1 models)**
+- 🌐 REST API using FastAPI
+- 🔓 CORS enabled for frontend integration
+- 🧩 Clean, modular backend architecture
 
-## Tech Stack
-------------
+---
 
-*   **Programming Language**: Node.js (JavaScript)
-*   **Framework**: Express.js
-*   **Database**: MongoDB
-*   **Machine Learning Library**: TensorFlow.js
-*   **Containerization**: Docker
-*   **Orchestration**: Kubernetes
+## 🏗️ Tech Stack
 
-## Installation
-------------
+- **Backend Framework:** FastAPI
+- **AI Provider:** Groq
+- **Model Used:** `llama-3.1-8b-instant`
+- **Language:** Python 3.10+
+- **Streaming:** FastAPI `StreamingResponse`
+- **Server:** Uvicorn
 
-To install and run the RepoScripe-AI-Backend API, follow these steps:
+---
 
-1.  Clone the repository using Git:
-    ```bash
-git clone https://github.com/AbishekRaj2007/RepoScripe-AI-Backend.git
-```
-2.  Install dependencies using npm:
-    ```bash
-npm install
-```
-3.  Create a `.env` file and set environment variables:
-    ```bash
-cp .env.example .env
-```
-4.  Start the API using Docker:
-    ```bash
-docker-compose up
-```
+## 📁 Project Structure
 
-## Usage
------
+```text
+RepoScribe-AI-Backend/
+│
+├── app/
+│   ├── main.py                # FastAPI app & routes
+│   ├── config.py              # Environment variables
+│   └── services/
+│       └── ai_service.py      # Groq streaming logic
+│
+├── venv/                      # Virtual environment
+├── .env                       # API keys (ignored)
+├── requirements.txt           # Python dependencies
+└── README.md                  # Project documentation
+🔐 Environment Variables
+Create a .env file in the project root:
 
-To interact with the RepoScripe-AI-Backend API, use the following endpoints:
+env
+Copy code
+GROQ_API_KEY=your_groq_api_key_here
+⚠️ Do not commit .env to GitHub.
 
-*   **GET /analyze**: Analyze data from various sources.
-*   **GET /predict**: Generate predictions based on analyzed data.
-*   **GET /insights**: Retrieve real-time insights and recommendations.
+📦 Installation & Setup
+1️⃣ Clone the repository
+bash
+Copy code
+git clone https://github.com/your-username/reposcribe-ai-backend.git
+cd reposcribe-ai-backend
+2️⃣ Create and activate virtual environment
+bash
+Copy code
+python -m venv venv
+Windows
 
-## Folder Structure
------------------
+bash
+Copy code
+venv\Scripts\activate
+Linux / macOS
 
-The RepoScripe-AI-Backend repository is organized into the following folders:
+bash
+Copy code
+source venv/bin/activate
+3️⃣ Install dependencies
+bash
+Copy code
+pip install -r requirements.txt
+▶️ Running the Server
+bash
+Copy code
+uvicorn app.main:app --reload
+Server will start at:
 
-*   **src**: Contains the API source code.
-*   **models**: Houses machine learning models and algorithms.
-*   **controllers**: Defines API endpoints and business logic.
-*   **routes**: Maps API endpoints to controllers.
-*   **tests**: Contains unit tests and integration tests.
+dts
+Copy code
+http://127.0.0.1:8000
+📖 API Documentation
+Swagger UI:
 
-## Future Improvements
--------------------
+dts
+Copy code
+http://127.0.0.1:8000/docs
+🔁 Streaming README Generation Endpoint
+POST /generate-readme-stream
+Request Body
+json
+Copy code
+{
+  "repoUrl": "https://github.com/user/repository",
+  "style": "professional"
+}
+Response
+Streams README content token-by-token
 
-*   **Implement data caching**: Improve performance by caching frequently accessed data.
-*   **Integrate with other services**: Expand the API's capabilities by integrating with other services and systems.
-*   **Enhance security**: Continuously monitor and improve security measures to protect sensitive data.
+Content-Type: text/plain
 
-## Contributing
-------------
+🧪 Testing the Streaming API (Recommended)
+Use curl:
 
-Contributions to the RepoScripe-AI-Backend repository are welcome. Please submit pull requests or issues to help improve the API's functionality and scalability.
-
-## License
--------
-
-RepoScripe-AI-Backend is licensed under the MIT License. See the LICENSE file for details.
-
-## Contact
----------
-
-For any questions or concerns, please contact Abishek Raj at [abishekraj2007@gmail.com](mailto:abishekraj2007@gmail.com).
-
-## Note
---------
-
-Generated by the AI itself
+bash
+Copy code
+curl -N -X POST http://127.0.0.1:8000/generate-readme-stream \
+-H "Content-Type: application/json" \
+-d "{\"repoUrl\":\"https://github.com/octocat/Hello-World\",\"style\":\"professional\"}"
