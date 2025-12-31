@@ -1,6 +1,37 @@
-import google.generativeai as genai
+from openai import OpenAI
+from dotenv import load_dotenv
+import os
 
-genai.configure(api_key="PASTE_AI_STUDIO_KEY_HERE")
+load_dotenv()
 
-model = genai.GenerativeModel("gemini-1.5-flash")
-print(model.generate_content("Say hello in one sentence").text)
+client = OpenAI(
+    api_key=os.getenv("OPENAI_API_KEY")
+)
+
+def generate_readme(file_list: str) -> str:
+    prompt = f"""
+You are an expert software engineer.
+Generate a professional README.md for the following GitHub repository.
+
+Include:
+- Project overview
+- Features
+- Tech stack
+- Installation
+- Usage
+- Folder structure
+- Future improvements
+
+Repository files:
+{file_list}
+"""
+
+    response = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[
+            {"role": "system", "content": "You generate professional README files."},
+            {"role": "user", "content": prompt}
+        ]
+    )
+
+    return response.choices[0].message.content

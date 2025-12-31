@@ -1,10 +1,13 @@
-import google.generativeai as genai
+from openai import OpenAI
 
-API_KEY = "PASTE_AI_STUDIO_KEY_HERE"  # no quotes inside the key
+client = OpenAI()
 
-genai.configure(api_key=API_KEY)
+response = client.chat.completions.create(
+    model="gpt-4o-mini",
+    messages=[
+        {"role": "system", "content": "You are a helpful assistant."},
+        {"role": "user", "content": "Say hello and confirm the API works."}
+    ]
+)
 
-model = genai.GenerativeModel("gemini-1.5-flash")
-
-response = model.generate_content("Say hello in one sentence")
-print(response.text)
+print(response.choices[0].message.content)

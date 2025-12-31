@@ -1,31 +1,33 @@
 from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
-from app.services.github_service import fetch_repo_structure
+from pydantic import BaseModel
+from typing import List
+
 from app.services.ai_service import generate_readme
-from app.schemas import RepoRequest
-from app.services.github_service import fetch_repo_structure
-from app.services.ai_service import generate_readme
+from app.services.github_service import fetch_repo_files
+
+app = FastAPI(title="RepoScribe AI Backend")
 
 
-app = FastAPI(title="Reposcribe API")
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],  # frontend URL later
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
-@app.get("/")
-def check():
-    return {"status": "Reposcribe API is running 🚀"}
+# ---------- Schemas ----------
+class RepoInput(BaseModel):
+    files: List[str]
 
 
+class RepoRequest(BaseModel):
+    owner: str
+    repo: str
 
+
+# ---------- Routes ----------
 @app.post("/generate-readme")
-def generate(data: RepoRequest):
-    repo_url = data.repo_url
-    owner, repo = repo_url.rstrip("/").split("/")[-2:]
-    repo_data = fetch_repo_structure(owner, repo)
-    readme = generate_readme(repo_data)
+def generate(repo: RepoInput):
+    file_list = "\n".join(repo.files)
+    readme = generate_readme(file_list)
+    return {"readme": readme}
+
+
+@app.post("/generate-from-github")
+def generate_from_github(repo: RepoRequest):
+    files = fetch_repo_files(repo.owner, repo.repo)
+    readme = generate_readme("\n".join(files))
     return {"readme": readme}
